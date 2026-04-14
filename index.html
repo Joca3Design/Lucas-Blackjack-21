@@ -4,6 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>♠️ LUCAS' BLACKJACK ♠️</title>
+    <link rel="shortcut icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAMAAABF0y+mAAABj1BMVEVHcEzYtbXgjIzLjo7lfn7g4ODe3t3OKSnWSUncXl7eZWXeaGi3GRna2trR09PLWlm7Li68MDDAPj3e3t7m5ubq6urNzc3P0NDNtrWpIiLT1NTe3t7IyMjMz8+oOzvHx8fEnZ2/Jye0LCy0JCTExMTMzs6hHBxzPT7AwMDKzMy/fX2sJCSsJSWzdnaibGyxtbW5vLy5urm8vLzK0NDOMDDSS0u0r6+zuLi0tbTDxsaMVFSiIyPO0NBuKCi4p6exs7PAwcHFtbWYGxvQNjaMEhJ3KiqaHx/DIiKfrKuusLCRJCSTHByVHh6kIiKYpqWkXV2NFxeRHRyKGRmFEhKEFBSEMzOHCgqGFxeDCwuCFBR1AAB/AACekZGoqKhzBQV1CAhxAAC7vLyenp6VlpZnBgZ5AQGVXl6Xl5eJiop7Dw+lpqaSkpKTlJSKfX12Dg6HiYmPk5NtCgqMjIyPj4+Bf3+Li4uFhoZkBgaGh4eIiYmHh4dpAgKAe3uCgoJxAABeBAR+fn5ZAgJTAgJWAQFUAgI0KSHaAAAAhXRSTlMAK3VSD4OVkP//8uKi/89Q9P9WxjAY/+10uuao/694/23K/9b+eJ0F/8Rl5PxwJabd/v9bu2yMvf2iav6RE2vl8ULmgSMK/69514jL//FYQLf///XYdsP/3v/Mmmj/humly//iMlZW/5T87v/zVv9Gq//+/3nzxf+5/v/8jeW4/6D/zLCa7JK89wAAAgZJREFUeAFczgOWQzEUANDUtm3bX7Vtu93/HiYY34PgEXzh8QVCTMDngX9EYolUJlco5DKpUiQCf/BUao1Wh2n1BpUR/GIymC1WJQnarHazwfQr5jA7zS43KXWL4cNh+hXzeDxqr88PBbxq+PiOGg3mIOQMhf1QOEReBjQ3IlJFiVg8kUwmUq7Pp1kcAWlvJpvLI9GCLZm0FYL4kctmrGmgL5bi5QqVg2iGZd1cHt6oSjleKupBlfX7JKVapk5RjWar1WxQVD1TK7V9frYDuq1ej03024LBkAqNwiFqOBCU+oFkr9fqgu54AvWmAYlmlknP6ZlA4puy6G/cBZHFEptMkj49AJpisjchPwsUXBHrzSgNl99u1p8fO9R2jxwWTFMUm+tdXJNZHPDXBgbXx+P6dL4U6Mb1olzMrjlX4XLbod8u6Bzvj20t9KRer/e8tZ5/dCHPCggFUBiAz5M0ha01t8U5u65tGw/eVfyWH8jj0b03xuvbdY8CdsEbvcWZyJBLilrOicx50WvgFwxGwzv9IJjsYbkNzx84hMg96HuvDSAgTEmsXSXpuhariQiQmZCykpHVo5S5nbRikRMoqZosy3r/YGSufTMbmgpvqmXZ5MUxchfXsiwVvri21/eDwqHv2WELvkw8HXOiEmZ6E/ghuLcoTtI0iaNE5eDPCB1NWplJVqDyBLtdpC9JtD2AAAAAAElFTkSuQmCC" type="image/x-icon">
     <!-- Font Awesome for icons -->
     <link
       rel="stylesheet"
@@ -582,6 +583,15 @@
         }
         .trump-card{
           flex-direction: column;
+          min-width: fit-content;
+        }
+        .goal-indicator{
+          width: 70%;
+          text-align: center;
+        }
+        .bet-hearts{
+          display: block;
+          margin-top: 10px;
         }
       }
 
