@@ -421,16 +421,68 @@
 
       .bets-display {
         background: #1e261f;
-        padding: 6px 20px;
+        padding: 8px 18px;
         border-radius: 40px;
         border: 1px solid #b3925c;
         font-weight: bold;
         display: flex;
-        gap: 24px;
+        gap: 22px;
+        align-items: center;
+        flex-wrap: wrap;
       }
-      .bets-display i {
+
+      .bet-side {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        white-space: nowrap;
+      }
+
+      .bet-side i {
         color: #e4c27a;
-        margin-right: 6px;
+      }
+
+      .bet-hearts {
+        display: inline-flex;
+        gap: 4px;
+        align-items: center;
+        margin-left: 2px;
+      }
+
+      .bet-heart {
+        font-size: 1.05rem;
+        transition:
+          transform 0.2s ease,
+          opacity 0.2s ease,
+          filter 0.2s ease;
+      }
+
+      .bet-heart.filled {
+        color: #e6dccb; /* same tone as your UI text (white/ivory) */
+        filter: none;
+      }
+
+      .bet-heart.stake {
+        color: #ff3d4f;
+        animation: heartPulse 1.05s infinite ease-in-out;
+        filter: drop-shadow(0 0 6px rgba(255, 61, 79, 0.55));
+      }
+
+      .bet-heart.empty {
+        color: #ffffff;
+        opacity: 0.45;
+      }
+
+      @keyframes heartPulse {
+        0%,
+        100% {
+          transform: scale(1);
+          filter: drop-shadow(0 0 5px rgba(255, 61, 79, 0.45));
+        }
+        50% {
+          transform: scale(1.2);
+          filter: drop-shadow(0 0 12px rgba(255, 61, 79, 0.9));
+        }
       }
 
       .trump-card img {
@@ -477,7 +529,7 @@
         text-align: center;
 
         box-shadow:
-          0 30px 60px rgba(0,0,0,0.9),
+          0 30px 60px rgba(0, 0, 0, 0.9),
           inset 0 0 20px #000000aa;
 
         transform: scale(0.8);
@@ -519,6 +571,20 @@
         flex-direction: column;
         gap: 4px;
       }
+
+      /* Styles applied to devices with a width of 480px or less */
+      @media screen and (max-width: 480px) {
+        .cards-container{
+          gap: 0;
+        }
+        .card{
+          width: 75px;
+        }
+        .trump-card{
+          flex-direction: column;
+        }
+      }
+
     </style>
   </head>
   <body>
@@ -554,41 +620,22 @@
           align-items: center;
         "
       >
-        <h2>
-          <i class="fas fa-skull"></i> LUCAS' BLACKJACK
-        </h2>
+        <h2><i class="fas fa-skull"></i> LUCAS' BLACKJACK</h2>
         <div class="goal-indicator">
           <i class="fas fa-flag-checkered"></i> GOAL:
           <span id="goalDisplay">21</span>
         </div>
       </div>
 
-      <!-- BET DISPLAY -->
-      <div style="display: flex; justify-content: flex-end; margin: 5px 0 10px">
-        <div class="bets-display">
-          <span
-            ><i class="fas fa-coins"></i> YOU:
-            <span id="playerBetsSpan">5</span></span
-          >
-          <span>
-            <i class="fas fa-user-secret"></i> HOFFMAN:
-            <span id="opponentBetsSpan">5</span>
-            <span
-              id="opponentBetBoost"
-              style="margin-left: 6px; color: #e4c27a"
-            ></span>
-          </span>
-        </div>
-      </div>
-
       <!-- OPPONENT (DEALER) AREA -->
       <div class="dealer-area">
         <div class="hand-header">
-          <span class="hand-title"
-            ><i class="fas fa-user-secret"></i> HOFFMAN</span
-          >
-          <span class="score-badge" id="opponentScoreDisplay">? + ?</span>
-        </div>
+  <span class="hand-title">
+    <i class="fas fa-user-secret"></i> HOFFMAN
+    <span id="opponentBetHearts" class="bet-hearts"></span>
+  </span>
+  <span class="score-badge" id="opponentScoreDisplay">? + ?</span>
+</div>
         <div id="opponentCardsContainer" class="cards-container"></div>
         <div
           id="opponentStatus"
@@ -599,20 +646,21 @@
       <!-- PLAYER AREA -->
       <div class="player-area">
         <div class="hand-header">
-          <span class="hand-title"><i class="fas fa-user"></i> YOU</span>
-          <span
-            ><span class="score-badge" id="playerScoreDisplay">0</span>
-            <span id="playerBustBadge" class="bust-tag" style="display: none"
-              >BUST</span
-            ></span
-          >
-        </div>
+  <span class="hand-title">
+    <i class="fas fa-user"></i> YOU
+    <span id="playerBetHearts" class="bet-hearts"></span>
+  </span>
+  <span>
+    <span class="score-badge" id="playerScoreDisplay">0</span>
+    <span id="playerBustBadge" class="bust-tag" style="display: none">BUST</span>
+  </span>
+</div>
         <div id="playerCardsContainer" class="cards-container"></div>
       </div>
 
       <!-- INFO & MESSAGES -->
       <div class="info-panel">
-        <div>
+        <div style="display: none;">
           <i class="fas fa-gem"></i> <span id="deckCount">11</span> cards left
         </div>
         <div class="message-box" id="messageArea">
@@ -699,9 +747,11 @@
         const newGameBtn = document.getElementById("newGameBtn");
         const trumpContainer = document.getElementById("trumpContainer");
 
-        // Bet spans
-        const playerBetsSpan = document.getElementById("playerBetsSpan");
-        const opponentBetsSpan = document.getElementById("opponentBetsSpan");
+        const MAX_BETS = 5;
+
+        // Bet containers (NEW)
+        const playerBetHearts = document.getElementById("playerBetHearts");
+        const opponentBetHearts = document.getElementById("opponentBetHearts");
 
         // Banner elements
         const banner = document.getElementById("gameoverBanner");
@@ -721,7 +771,9 @@
         );
         cardSound.volume = 0.5; // optional
 
-        const trumpSound = new Audio("Sounds/773582__janbuilderr__coincollect.mp3");
+        const trumpSound = new Audio(
+          "Sounds/773582__janbuilderr__coincollect.mp3",
+        );
         trumpSound.volume = 0.6;
 
         // ---------- UTILS ----------
@@ -758,25 +810,32 @@
           return playerHand.includes(value) || opponentHand.includes(value);
         }
 
-        function updateBetDisplay() {
-          playerBetsSpan.textContent = playerBets;
-          opponentBetsSpan.textContent = opponentBets;
+        function renderBetHearts(container, remainingBets, stakeCount = 0) {
+  container.innerHTML = "";
 
-          const boostSpan = document.getElementById("opponentBetBoost");
+  const safeStakeCount = Math.min(stakeCount, remainingBets);
+  const normalCount = remainingBets - safeStakeCount;
 
-          if (opponentBetBoost > 0) {
-            boostSpan.textContent = `(+${opponentBetBoost})`;
+  for (let i = 0; i < MAX_BETS; i++) {
+    const heart = document.createElement("i");
 
-            // 🔥 color feedback (THIS is the optional part)
-            if (opponentBetBoost >= 2) {
-              boostSpan.style.color = "#ff7676"; // danger red
-            } else {
-              boostSpan.style.color = "#e4c27a"; // gold
-            }
-          } else {
-            boostSpan.textContent = "";
-          }
-        }
+    if (i < normalCount) {
+      heart.className = "fas fa-heart bet-heart filled";
+    } else if (i < remainingBets) {
+      heart.className = "fas fa-heart bet-heart stake";
+    } else {
+      heart.className = "far fa-heart bet-heart empty";
+    }
+
+    container.appendChild(heart);
+  }
+}
+
+function updateBetDisplay() {
+  renderBetHearts(playerBetHearts, playerBets, 1);
+  renderBetHearts(opponentBetHearts, opponentBets, 1 + opponentBetBoost);
+}
+
         function renderUI() {
           renderHands();
           updateScoresAndStatus();
@@ -911,13 +970,15 @@
           },
           {
             name: "Switch",
-            imageUrl: "https://static.wikia.nocookie.net/residentevil/images/4/42/Exchange.png",
+            imageUrl:
+              "https://static.wikia.nocookie.net/residentevil/images/4/42/Exchange.png",
             desc: "Switch last drawn card with opponent",
             action: "switchLast",
           },
           {
             name: "Best Card",
-            imageUrl: "https://static.wikia.nocookie.net/residentevil/images/6/60/Perfect_draw.png",
+            imageUrl:
+              "https://static.wikia.nocookie.net/residentevil/images/6/60/Perfect_draw.png",
             desc: "Take the best possible card",
             action: "bestSelf",
           },
@@ -1129,7 +1190,7 @@
             default:
               success = false;
           }
-          
+
           // 🔊 PLAY TRUMP SOUND
           const s = trumpSound.cloneNode();
           s.volume = 0.6;
@@ -1296,7 +1357,6 @@
           }
 
           if (success || trump.action === "upGoal") {
-
             // 🔊 PLAY TRUMP CARD SOUND
             const s = trumpSound.cloneNode();
             s.volume = 0.6;
@@ -1311,7 +1371,6 @@
             playerActedThisTurn = true;
             gameMessageSpan.textContent =
               gameMessageSpan.textContent || "Trump used.";
-
           } else {
             playerTrumpCards.splice(index, 1);
             gameMessageSpan.textContent = "Trump failed and was discarded.";
